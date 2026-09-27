@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Isack Bosco Daniel Portfolio</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%232dd4bf%22/><text x=%2250%22 y=%2265%22 font-size=%2245%22 font-family=%22sans-serif%22 font-weight=%22bold%22 fill=%22%230d1520%22 text-anchor=%22middle%22>HB</text></svg>">
+<style>
+:root{--bg:#0d1520;--bg2:#0a0f18;--text:#e8ecf1;--accent:#2dd4bf;--muted:#7f93ad;--card:#132033;--border:#22314a}
+body.light{--bg:#f4f6fb;--bg2:#e9edf6;--text:#1a2436;--muted:#5a6b85;--card:#ffffff;--border:#dde3ee}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s}
+#boot{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .5s}
+#boot.hide{opacity:0;pointer-events:none}
+.boot-logo{font-family:monospace;font-size:28px;font-weight:700;color:var(--accent);text-shadow:0 0 20px var(--accent)}
+.boot-text{font-family:monospace;font-size:12px;color:var(--muted)}
+.boot-bar{width:180px;height:3px;background:var(--border);border-radius:3px;overflow:hidden}
+.boot-fill{height:100%;background:var(--accent);width:0%;box-shadow:0 0 10px var(--accent);transition:width 1.3s ease}
+
+canvas#bgfx{position:fixed;inset:0;z-index:0;opacity:.5;pointer-events:none}
+#glowdot{position:fixed;width:16px;height:16px;border-radius:50%;background:var(--accent);box-shadow:0 0 20px 6px var(--accent);opacity:.5;pointer-events:none;z-index:5;transform:translate(-50%,-50%);transition:opacity .2s}
+
+.app{position:relative;z-index:1;max-width:520px;margin:0 auto;min-height:100vh;padding:24px 20px 90px}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.topbar .logo{font-family:monospace;color:var(--accent);font-weight:700;text-shadow:0 0 8px var(--accent)}
+#themeBtn{background:var(--card);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:8px;cursor:pointer;font-size:12px}
+
+.panel{display:none;animation:slideIn .4s ease}
+.panel.active{display:block}
+@keyframes slideIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
+
+.avatar{width:88px;height:88px;border-radius:50%;background:var(--card);border:2px solid var(--accent);box-shadow:0 0 16px rgba(45,212,191,.4);display:flex;align-items:center;justify-content:center;font-family:monospace;font-weight:700;color:var(--accent);margin-bottom:16px}
+.label{color:var(--accent);letter-spacing:3px;font-size:12px;text-transform:uppercase;font-weight:600}
+h1{font-size:34px;margin:8px 0 4px}
+.role{color:var(--muted);font-size:16px;min-height:24px;font-family:monospace}
+.cursor-blink{display:inline-block;width:2px;background:var(--accent);animation:blink .8s infinite}
+@keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
+.quote{color:var(--muted);font-style:italic;font-size:14px;margin:14px 0 0;border-left:3px solid var(--accent);padding-left:12px}
+.badge-live{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--accent);border:1px solid var(--accent);border-radius:20px;padding:4px 12px;margin:14px 0}
+.dot-live{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 6px var(--accent)}
+
+.buttons{display:flex;gap:10px;margin:16px 0;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:600;border:1px solid var(--border);color:var(--text);transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 0 14px rgba(45,212,191,.35);border-color:var(--accent)}
+.btn-primary{background:var(--accent);color:#0d1520;border:none}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px}
+.card-title{color:var(--accent);font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:12px}
+
+.timeline{position:relative;padding-left:20px;border-left:2px solid var(--border)}
+.tl-item{position:relative;margin-bottom:18px}
+.tl-item::before{content:'';position:absolute;left:-26px;top:2px;width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent)}
+.tl-title{font-weight:700;font-size:14px}
+.tl-meta{color:var(--muted);font-size:12px}
+
+.badges{display:flex;flex-wrap:wrap;gap:8px}
+.badge{border:1px solid var(--accent);color:var(--accent);border-radius:8px;padding:6px 12px;font-size:12px;box-shadow:0 0 6px rgba(45,212,191,.25)}
+
+.proj{border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;cursor:pointer;transition:border .2s,transform .2s}
+.proj:hover{border-color:var(--accent);transform:translateX(3px)}
+.proj-title{font-weight:700;margin-bottom:3px}
+.proj-desc{color:var(--muted);font-size:13px;margin:0}
+.soon{font-size:10px;background:var(--border);padding:2px 8px;border-radius:20px;margin-left:6px}
+
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+#modal.show{display:flex}
+.modal-box{background:var(--card);border:1px solid var(--accent);border-radius:12px;padding:20px;max-width:340px;box-shadow:0 0 30px rgba(45,212,191,.3)}
+.modal-box h3{margin-top:0;color:var(--accent)}
+.modal-close{margin-top:14px}
+
+.contact-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px}
+.contact-row:last-child{border:none}
+
+nav.bottomnav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:10px env(safe-area-inset-bottom,0) 10px;z-index:10}
+nav.bottomnav button{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:6px}
+nav.bottomnav button.active{color:var(--accent);text-shadow:0 0 10px var(--accent)}
+</style>
+</head>
+<body id="pageBody">
+
+<div id="boot">
+  <div class="boot-logo">HB</div>
+  <div class="boot-text" id="bootText">Loading Isack's Portfolio...</div>
+  <div class="boot-bar"><div class="boot-fill" id="bootFill"></div></div>
+</div>
+
+<canvas id="bgfx"></canvas>
+<div id="glowdot"></div>
+
+<div class="app">
+  <div class="topbar">
+    <div class="logo">HB</div>
+    <button id="themeBtn">Light</button>
+  </div>
+
+  <section class="panel active" id="p-home">
+    <div class="avatar">HB</div>
+    <div class="label">Portfolio</div>
+    <h1>Isack Bosco Daniel</h1>
+    <div class="role"><span id="typedText"></span><span class="cursor-blink">&nbsp;</span></div>
+    <div class="quote">"Nobody cares. Work harder."</div>
+    <div class="badge-live"><span class="dot-live"></span> Available for projects</div>
+    <div class="buttons">
+      <a class="btn btn-primary" href="mailto:humbleboytz24@gmail.com">Email</a>
+      <a class="btn" href="https://github.com/HUMBLEGANG" target="_blank">GitHub</a>
+      <a class="btn" href="https://wa.me/255718049799" target="_blank">WhatsApp</a>
+    </div>
+    <div class="card" style="margin-top:6px">
+      <div class="card-title">Currently building</div>
+      <p style="margin:0;color:var(--muted);font-size:13px">Duty Roster App: programu ya ratiba ya zamu kwa maafisa, ikijengwa kwa vibe coding.</p>
+    </div>
+  </section>
+
+  <section class="panel" id="p-about">
+    <div class="card">
+      <div class="card-title">About</div>
+      <p>Naitwa Isack, natokea Mbeya. Kwa sasa niko kwenye mchakato wa kujifunza coding: web dev, app dev na kidogo cybersecurity. Sina background ya kusoma programming shule, kila kitu ninajifunza mwenyewe kwa kutumia AI (vibe coding), youtube na kujaribu mara kwa mara. Bado safari ndefu, lakini nimeamua kuanza.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Why I code</div>
+      <p>Kwa ukweli, nilianza tu kwa udadisi: nikiona watu wanatengeneza website na apps nikajiuliza "na mimi naweza?" Nikaanza kujaribu, nikagundua ninaipenda. Sasa ni kama mchezo, kila siku najifunza kitu kipya na inanifurahisha kuona kitu nilichokijenga kikifanya kazi.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Languages</div>
+      <p>Kiswahili (Fluent) &nbsp;•&nbsp; English (Fluent)</p>
+    </div>
+  </section>
+
+  <section class="panel" id="p-journey">
+    <div class="card">
+      <div class="card-title">Journey</div>
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-title">Pamba Primary School</div><div class="tl-meta">Elimu ya msingi</div></div>
+        <div class="tl-item"><div class="tl-title">Mtoni Secondary School</div><div class="tl-meta">O Level, Form 1 hadi 4</div></div>
+        <div class="tl-item"><div class="tl-title">Advanced Level</div><div class="tl-meta">Form 5 hadi 6</div></div>
+        <div class="tl-item"><div class="tl-title">National Service (JKT)</div><div class="tl-meta">Mafunzo ya jeshi la kujenga taifa</div></div>
+        <div class="tl-item"><div class="tl-title">Diploma in Information Technology</div><div class="tl-meta">University of Iringa, 2025 hadi 2026</div></div>
+        <div class="tl-item"><div class="tl-title">Sasa</div><div class="tl-meta">Kujiandaa kuendelea na Computer Science chuoni</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="p-skills">
+    <div class="card">
+      <div class="card-title">Skills</div>
+      <div class="badges">
+        <span class="badge">HTML</span>
+        <span class="badge">CSS</span>
+        <span class="badge">JavaScript</span>
+        <span class="badge">Git</span>
+        <span class="badge">Node.js</span>
+        <span class="badge">Cybersecurity (Learning)</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Projects</div>
+      <div class="proj" onclick="openModal('Personal Portfolio','Website hii uliyopo, iliyojengwa kwa HTML/CSS/JS na msaada wa AI (vibe coding).')">
+        <div class="proj-title">Personal Portfolio</div>
+        <p class="proj-desc">Website hii uliyopo</p>
+      </div>
+      <div class="proj" onclick="openModal('Duty Roster App','App ya ratiba ya zamu kwa maafisa wa kikosi, inaonyesha ratiba kwenye simu na roles za admin, commander na askari.')">
+        <div class="proj-title">Duty Roster App <span class="soon">Coming Soon</span></div>
+        <p class="proj-desc">Ratiba ya zamu kwa maafisa</p>
+      </div>
+      <div class="proj" onclick="openModal('To-Do List App','Programu ya kuandika na kufuatilia kazi za kila siku, kwa JavaScript.')">
+        <div class="proj-title">To-Do List App <span class="soon">Coming Soon</span></div>
+        <p class="proj-desc">Kufuatilia kazi za kila siku</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="p-contact">
+    <div class="card">
+      <div class="card-title">Contact</div>
+      <div class="contact-row">Email: humbleboytz24@gmail.com</div>
+      <div class="contact-row">Phone: 0740 113 190</div>
+      <div class="contact-row">WhatsApp: +255 718 049 799</div>
+      <div class="contact-row">GitHub: github.com/HUMBLEGANG</div>
+    </div>
+  </section>
+</div>
+
+<div id="modal">
+  <div class="modal-box">
+    <h3 id="modalTitle"></h3>
+    <p id="modalDesc"></p>
+    <button class="btn modal-close" onclick="closeModal()">Close</button>
+  </div>
+</div>
+
+<nav class="bottomnav">
+  <button data-p="home" class="active" onclick="showPanel('home')">●</button>
+  <button data-p="about" onclick="showPanel('about')">About</button>
+  <button data-p="journey" onclick="showPanel('journey')">Journey</button>
+  <button data-p="skills" onclick="showPanel('skills')">Skills</button>
+  <button data-p="contact" onclick="showPanel('contact')">Contact</button>
+</nav>
+
+<script>
+// boot screen
+window.addEventListener('load', function(){
+  setTimeout(function(){ document.getElementById('bootFill').style.width='100%'; }, 100);
+  setTimeout(function(){ document.getElementById('boot').classList.add('hide'); }, 1400);
+});
+
+// theme toggle
+var themeBtn = document.getElementById('themeBtn');
+var body = document.getElementById('pageBody');
+themeBtn.addEventListener('click', function(){
+  body.classList.toggle('light');
+  themeBtn.textContent = body.classList.contains('light') ? 'Dark' : 'Light';
+});
+
+// typing effect
+var roles = ["Aspiring Software Developer","Web Developer","App Developer","Cybersecurity Enthusiast"];
+var ri=0, ci=0, del=false;
+var typedEl = document.getElementById('typedText');
+function typeLoop(){
+  var cur = roles[ri];
+  if(!del){
+    typedEl.textContent = cur.substring(0, ci+1); ci++;
+    if(ci===cur.length){ del=true; setTimeout(typeLoop,1300); return; }
+  } else {
+    typedEl.textContent = cur.substring(0, ci-1); ci--;
+    if(ci===0){ del=false; ri=(ri+1)%roles.length; }
+  }
+  setTimeout(typeLoop, del?30:45);
+}
+typeLoop();
+
+// panel navigation
+var panels = ['home','about','journey','skills','contact'];
+function showPanel(name){
+  panels.forEach(function(p){
+    document.getElementById('p-'+p).classList.toggle('active', p===name);
+  });
+  document.querySelectorAll('.bottomnav button').forEach(function(b){
+    b.classList.toggle('active', b.dataset.p===name);
+  });
+  try{ sessionStorage.setItem('lastPanel', name); }catch(e){}
+}
+try{
+  var last = sessionStorage.getItem('lastPanel');
+  if(last) showPanel(last);
+}catch(e){}
+
+// swipe on mobile
+var touchX=0;
+document.addEventListener('touchstart', function(e){ touchX = e.touches[0].clientX; });
+document.addEventListener('touchend', function(e){
+  var dx = e.changedTouches[0].clientX - touchX;
+  if(Math.abs(dx) < 60) return;
+  var active = document.querySelector('.bottomnav button.active');
+  var idx = panels.indexOf(active.dataset.p);
+  if(dx < 0 && idx < panels.length-1) showPanel(panels[idx+1]);
+  if(dx > 0 && idx > 0) showPanel(panels[idx-1]);
+});
+
+// modal
+function openModal(title, desc){
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalDesc').textContent = desc;
+  document.getElementById('modal').classList.add('show');
+}
+function closeModal(){ document.getElementById('modal').classList.remove('show'); }
+
+// cursor glow (desktop only)
+var glow = document.getElementById('glowdot');
+if(window.matchMedia('(pointer: fine)').matches){
+  document.addEventListener('mousemove', function(e){
+    glow.style.left = e.clientX+'px';
+    glow.style.top = e.clientY+'px';
+  });
+} else {
+  glow.style.display='none';
+}
+
+// background particles
+var canvas = document.getElementById('bgfx');
+var ctx = canvas.getContext('2d');
+function resize(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resize(); window.addEventListener('resize', resize);
+var pts = [];
+for(var i=0;i<40;i++){
+  pts.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, vx:(Math.random()-0.5)*0.2, vy:(Math.random()-0.5)*0.2});
+}
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = '#2dd4bf';
+  pts.forEach(function(p){
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<0||p.x>canvas.width) p.vx*=-1;
+    if(p.y<0||p.y>canvas.height) p.vy*=-1;
+    ctx.globalAlpha = 0.5;
+    ctx.beginPath(); ctx.arc(p.x,p.y,1.5,0,Math.PI*2); ctx.fill();
+  });
+  requestAnimationFrame(draw);
+}
+draw();
+</script>
+</body>
+</html>
